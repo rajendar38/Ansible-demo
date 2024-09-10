@@ -11,7 +11,7 @@
       win_uri:
         url: https://rajendar38.jfrog.io/artifactory/mysoftware/jdk-22_windows-x64_bin.zip
         url_username: rajendar.talatam@gmail.com
-        url_password: 'AKCpBtMoq6y7GhC3QHYVce2RhnattFXVZgMT1HXq5MEBbdYc3JvSqi37BjmdpW1g24sgvYies'
+        url_password: ''
         creates: C:\\Users\\temp\\jdk-22.zip
         dest: C:\\Users\\jdk-22.zip
     - name : list files
