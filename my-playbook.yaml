@@ -1,0 +1,52 @@
+- name: Install Java on Windows VM from Artifactory (.zip)
+  hosts: adwin
+  gather_facts: true
+  become_method: runas
+  tasks:
+    - name: Create temporary directory for Java installation
+      ansible.windows.win_file:
+        path: C:\temp\java_install
+        state: directory
+    - name: Download file from artifactory
+      win_uri:
+        url: https://rajendar38.jfrog.io/artifactory/mysoftware/jdk-22_windows-x64_bin.zip
+        url_username: rajendar.talatam@gmail.com
+        url_password: 'AKCpBtMoq6y7GhC3QHYVce2RhnattFXVZgMT1HXq5MEBbdYc3JvSqi37BjmdpW1g24sgvYies'
+        creates: C:\\Users\\temp\\jdk-22.zip
+        dest: C:\\Users\\jdk-22.zip
+    - name : list files
+      win_command: whoami
+        
+    - name: Extract Java .zip file
+      win_unzip:
+        src: C:\Users\jdk-22.zip
+        dest: C:\Program Files\Java
+        creates: C:\Program Files\Java  # Adjust to the actual extracted directory
+
+    - name: Set JAVA_HOME environment variable
+      ansible.windows.win_environment:
+        state: present
+        name: JAVA_HOME
+        value: "C:\\Program Files\\Java\\jdk-22.0.2"
+        level: machine
+
+    - name: Add Java to system PATH
+      ansible.windows.win_environment:
+        state: present
+        name: Path
+        value: "C:\\Program Files\\Java\\jdk-22.0.2\\bin"
+        level: machine
+
+          #- name: Reboot the Windows VM if required
+          #ansible.windows.win_reboot:
+          #reboot_timeout: 120
+
+    - name: Verify Java installation
+      ansible.windows.win_command:
+        cmd: "java -version"
+      register: java_version_output
+
+    - name: Display Java version
+      ansible.builtin.debug:
+        msg: "{{ java_version_output.stdout }}"
+ansible-playbook -i hosts test3.yaml -vvv
